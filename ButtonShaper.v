@@ -1,16 +1,16 @@
 /*
-Name: The Magnesium Team (Olanrewaju Ibironke, Su Hui Tan, Anitha Ramesh Puranik, Meghna Chittajallu)
-Date: April 13, 2016
+Name: Olanrewaju Gabriel Ibironke
+Date: February 20, 2016
 Project: Button Shaper
 */
-module ButtonShaper(buttonInput, buttonOutput, Clk, Rst);
-input buttonInput, Clk, Rst;
+module ButtonShaper(buttonInput, buttonOutput, Clk);
+input buttonInput, Clk;
 output buttonOutput;
 reg buttonOutput;
 
 parameter sOff = 0, sOn = 1, sWait = 2;
 
-reg [1:0] State, StateNext;
+reg [1:0] State = sOff, StateNext;
 
 // Combinational Logic
 always @(State, buttonInput) 
@@ -51,13 +51,6 @@ end
 // State Register
 always @(posedge Clk)
 begin
-	if(Rst == 0)
-	begin
-		State <= sOff;
-	end
-	else
-	begin
-		State <= StateNext;
-	end
+	State <= StateNext;
 end
 endmodule

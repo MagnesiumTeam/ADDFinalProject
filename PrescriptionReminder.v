@@ -15,3 +15,6 @@ ButtonShaper ButtonShaperAlarm(alarm, buttonShapedAlarm, clk);
 ButtonShaper ButtonShaperSelectMedicine(selectMedicine, buttonShapedSelectMedicine, clk);
 
 endmodule
+
+// Log April 14 2016
+// Created the ButtonShaper instances

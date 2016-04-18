@@ -4,13 +4,14 @@ Date: March 22, 2016
 Project: CustomTimer
 */
 
-module OneSecondTimer(enableTimer, clk, oneSecondClk);
-input enableTimer, clk;
+module OneSecondTimer(state, clk, oneSecondClk);
+input clk;
+input [3:0] state;
 output oneSecondClk;
 
 wire bitFromOneMilliSecond;
 
-OneMilliSecondTimer OneMilliSecondTimerOST(enableTimer, clk, bitFromOneMilliSecond);
+OneMilliSecondTimer OneMilliSecondTimerOST(state, clk, bitFromOneMilliSecond);
 OneThousandCount OneThousandCountOST(bitFromOneMilliSecond, oneSecondClk);
 
 endmodule

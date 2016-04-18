@@ -178,7 +178,12 @@ begin
 							if(canIMove == 1)begin
 								if(rCount == 49999999)begin
 									if(currentBits[19:16] == 4'd2)begin
-										count <= 4'd0;	
+										if(currentBits[23:20] == 4'd1)begin
+											count <= 4'd1;
+										end
+										else begin
+											count <= 4'd0;	
+										end
 									end
 									else begin
 										count <= count + 4'd1;	

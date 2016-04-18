@@ -14,15 +14,20 @@ begin
 	clockBitsOut <= clockBitsIn;
 end*/
 
-wire oneSecondClk;
+//wire oneSecondClk;
+wire otherBitsMove;
+wire [5:0] fromLSB, fromHSB, fromLMB, fromHMB, fromLHB, fromHHB;
+wire [25:0] rCountFromLSB;
+wire [23:0] currentBits;
 
 //OneSecondTimer OneSecondTimerClock(4'd3, clk, oneSecondClk);
 
-DigitModule DigitModuleHHB(clockBitsIn[23:20], 4'd1, clk, state, clockBitsOut[23:20]);
-DigitModule DigitModuleLHB(clockBitsIn[19:16], 4'd2, clk, state, clockBitsOut[19:16]);
-DigitModule DigitModuleHMB(clockBitsIn[15:12], 4'd5, clk, state, clockBitsOut[15:12]);
-DigitModule DigitModuleLMB(clockBitsIn[11:8], 4'd9, clk, state, clockBitsOut[11:8]);
-DigitModule DigitModuleHSB(clockBitsIn[7:4], 4'd5, clk, state, clockBitsOut[7:4]);
-DigitModule DigitModuleLSB(clockBitsIn[3:0], 4'd9, clk, state, clockBitsOut[3:0]);
+DigitModule DigitModuleHHB(currentBits, otherBitsMove, rCountFromLSB, fromLHB, 4'd6, clockBitsIn[23:20], 4'd1, clk, state, clockBitsOut[23:20], fromHHB);
+DigitModule DigitModuleLHB(currentBits, otherBitsMove, rCountFromLSB, fromHMB, 4'd5, clockBitsIn[19:16], 4'd2, clk, state, clockBitsOut[19:16], fromLHB);
+DigitModule DigitModuleHMB(currentBits, otherBitsMove, rCountFromLSB, fromLMB, 4'd4, clockBitsIn[15:12], 4'd5, clk, state, clockBitsOut[15:12], fromHMB);
+DigitModule DigitModuleLMB(currentBits, otherBitsMove, rCountFromLSB, fromHSB, 4'd3, clockBitsIn[11:8], 4'd9, clk, state, clockBitsOut[11:8], fromLMB);
+DigitModule DigitModuleHSB(currentBits, otherBitsMove, rCountFromLSB, fromLSB, 4'd2, clockBitsIn[7:4], 4'd5, clk, state, clockBitsOut[7:4], fromHSB);
+DigitModuleLSB DigitModuleLSB(6'b000001, 4'd1, clockBitsIn[3:0], 4'd9, clk, state, clockBitsOut[3:0], fromLSB, rCountFromLSB, otherBitsMove);
 
+assign currentBits = clockBitsOut;
 endmodule

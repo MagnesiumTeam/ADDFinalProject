@@ -68,7 +68,7 @@ begin
 						end 												// a 12 hr clock
 					end
 					else begin 									// if the toggle switch value is not greater than 9 for LHB
-						if(rControlledToggleSwitchBits[23:20] == 4'd0)begin // check if the HHB is 0. If it is
+						if(rControlledToggleSwitchBits[23:20] < 4'd2)begin // check if the HHB is less than 2. If it is
 							rControlledToggleSwitchBits[19:16] <= toggleSwitches17To14[3:0]; // you can pass the value on the toggle switches
 						end
 						else begin 											// if the HHB is 1 then

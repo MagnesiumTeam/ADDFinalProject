@@ -39,7 +39,7 @@ begin
 	else begin
 		case(nextState)
 			sReset:begin
-				count <= maximumBits;
+				count <= 4'd0;
 				rCount <= 26'd0;
 				if(state == 4'd0)begin
 					nextState <= sReset;

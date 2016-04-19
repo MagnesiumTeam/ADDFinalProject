@@ -38,7 +38,7 @@ begin
 	else begin
 		case(nextState)
 			sReset:begin
-				count <= maximumBits;
+				count <= 4'd0;
 				if(state == 4'd0)begin
 					nextState <= sReset;
 				end
@@ -178,12 +178,13 @@ begin
 							if(canIMove == 1)begin
 								if(rCount == 49999999)begin
 									if(currentBits[19:16] == 4'd2)begin
-										if(currentBits[23:20] == 4'd1)begin
+										if(currentBits[23:20] == 4'd1 && currentBits[15:12] == 4'd5 && currentBits[11:8] == 4'd9 && currentBits[7:4] == 4'd5 && currentBits[3:0] == 9)begin
 											count <= 4'd1;
 										end
-										else begin
+										else if(currentBits[23:20] == 4'd1 && currentBits[19:16] == 4'd2 && currentBits[15:12] == 4'd5 && currentBits[11:8] == 4'd9 && currentBits[7:4] == 4'd5 && currentBits[3:0] == 9)begin
 											count <= 4'd0;	
 										end
+										
 									end
 									else begin
 										count <= count + 4'd1;	
@@ -217,7 +218,7 @@ begin
 						if(currentBits[19:16] == 4'd2)begin
 							if(canIMove == 1)begin
 								if(rCount == 49999999)begin
-									if(currentBits[23:20] == 4'd1)begin
+									if(currentBits[23:20] == 4'd1 && currentBits[19:16] == 4'd2 && currentBits[15:12] == 4'd5 && currentBits[11:8] == 4'd9 && currentBits[7:4] == 4'd5 && currentBits[3:0] == 9)begin
 										count <= 4'd0;	
 									end
 								end

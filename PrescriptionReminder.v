@@ -26,7 +26,7 @@ ButtonShaper ButtonShaperSet(resetSetLoadStartFromInputWrapper[2], resetSetLoadS
 ButtonShaper ButtonShaperStart(resetSetLoadStartFromInputWrapper[1], resetSetLoadStartFromButtonShaper[1], clkFromInputWrapper);
 ButtonShaper ButtonShaperPause(resetSetLoadStartFromInputWrapper[0], resetSetLoadStartFromButtonShaper[0], clkFromInputWrapper);
 
-Control ControlPR(toggleSwitches17To14FromInputWrapper, toggleSwitches13To6FromInputWrapper, resetSetLoadStartFromButtonShaper, clkFromInputWrapper, controlledToggleSwitchBits, romAddressFromControl, state);
+Control ControlPR(bitsFromClock, toggleSwitches17To14FromInputWrapper, toggleSwitches13To6FromInputWrapper, resetSetLoadStartFromButtonShaper, clkFromInputWrapper, controlledToggleSwitchBits, romAddressFromControl, state);
 
 //OneSecondTimer OneSecondTimerPR(state, clkFromInputWrapper, bitFromOneSecondClock);
 

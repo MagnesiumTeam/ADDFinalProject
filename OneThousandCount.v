@@ -6,7 +6,6 @@ output countOut;
 reg [11:0] rCount = 12'd0;
 reg countOut;
 
-
 // Sequential logic
 always @(posedge clk)
 begin
@@ -20,4 +19,3 @@ begin
 	end
 end
 endmodule
-

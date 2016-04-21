@@ -4,14 +4,14 @@ Date: April 14, 2016
 Project: Prescription Reminder
 */
 
-module PrescriptionReminder(resetSetLoadStart, toggleSwitches17To14, toggleSwitches13To6, clk, outputBits, idAndDuration);
-input clk;
+module PrescriptionReminder(resetSetLoadStart, toggleSwitches17To14, toggleSwitches13To6, clk, outputBits, idAndDuration, demoOrRealMode);
+input clk, demoOrRealMode;
 input [3:0] toggleSwitches17To14, resetSetLoadStart;
 input [7:0] toggleSwitches13To6;
 output [41:0] outputBits;
 output [13:0] idAndDuration;
 
-wire bitFromOneSecondClock, clkFromInputWrapper, enableTimerFromInputWrapper;
+wire bitFromOneSecondClock, clkFromInputWrapper, enableTimerFromInputWrapper, demoOrRealModeFromInputWrapper;
 wire [41:0] bitsFromSevenSegDisp;
 //wire [3:0] bitsFromOneToFourBits;
 wire [3:0] toggleSwitches17To14FromInputWrapper, resetSetLoadStartFromInputWrapper, resetSetLoadStartFromButtonShaper, state;
@@ -19,7 +19,7 @@ wire [7:0] toggleSwitches13To6FromInputWrapper, romAddressFromControl, romConten
 wire [23:0] controlledToggleSwitchBits, bitsFromClock;
 wire [13:0] idAndDurationFromSevenSeg;
 
-InputWrapper InputWrapperPR(resetSetLoadStart, toggleSwitches17To14, toggleSwitches13To6, clk, resetSetLoadStartFromInputWrapper, toggleSwitches17To14FromInputWrapper, toggleSwitches13To6FromInputWrapper,  clkFromInputWrapper);
+InputWrapper InputWrapperPR(demoOrRealMode, resetSetLoadStart, toggleSwitches17To14, toggleSwitches13To6, clk, demoOrRealModeFromInputWrapper, resetSetLoadStartFromInputWrapper, toggleSwitches17To14FromInputWrapper, toggleSwitches13To6FromInputWrapper,  clkFromInputWrapper);
 
 ButtonShaper ButtonShaperReset(resetSetLoadStartFromInputWrapper[3], resetSetLoadStartFromButtonShaper[3], clkFromInputWrapper);
 ButtonShaper ButtonShaperSet(resetSetLoadStartFromInputWrapper[2], resetSetLoadStartFromButtonShaper[2], clkFromInputWrapper);
@@ -36,7 +36,7 @@ Control ControlPR(bitsFromClock, toggleSwitches17To14FromInputWrapper, toggleSwi
 
 ROM ROMPR(romAddressFromControl, clkFromInputWrapper, romContent);
 
-Clock ClockPR(state, controlledToggleSwitchBits, clkFromInputWrapper, bitsFromClock);
+Clock ClockPR(demoOrRealModeFromInputWrapper, state, controlledToggleSwitchBits, clkFromInputWrapper, bitsFromClock);
 
 SevenSegDisp SevenSegDispHHB(bitsFromClock[23:20], bitsFromSevenSegDisp[41:35]);
 SevenSegDisp SevenSegDispLHB(bitsFromClock[19:16], bitsFromSevenSegDisp[34:28]);

@@ -1,15 +1,22 @@
 
-module OneMilliSecondTimer(clk, oneMilliSecond);
-input clk;
+module OneMilliSecondTimer(demoOrRealMode, clk, oneMilliSecond);
+input clk, demoOrRealMode;
 output oneMilliSecond;
 
 reg [15:0] rCount = 16'd0;
 reg oneMilliSecond;
+reg [15:0] realOrDemo;
 
 // Sequential logic
 always @(posedge clk)
 begin
-	if(rCount == 49999) begin
+	if(demoOrRealMode == 0)begin
+		realOrDemo <= 49;
+	end
+	else begin
+		realOrDemo <= 49999;
+	end
+	if(rCount == realOrDemo) begin
 		oneMilliSecond <= 1;
 		rCount <= 16'd0;
 	end

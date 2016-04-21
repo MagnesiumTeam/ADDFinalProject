@@ -3,16 +3,16 @@ Name: The Magnesium Team (Olanrewaju Ibironke, Su Hui Tan, Anitha Ramesh Puranik
 Date: April 14, 2016
 Project: Clock
 */
-module Clock(state, clockBitsIn, clk, clockBitsOut);
+module Clock(demoOrRealMode, state, clockBitsIn, clk, clockBitsOut);
 input [23:0] clockBitsIn;
-input clk;
+input clk, demoOrRealMode;
 input [3:0] state;
 output [23:0] clockBitsOut;
   
 wire [23:0] currentBits;  
 wire oneSecondClk, oneSecondClkExtended;
 
-OneSecondTimer OneSecondTimerClock(clk, oneSecondClk);
+OneSecondTimer OneSecondTimerClock(demoOrRealMode, clk, oneSecondClk);
  
 ButtonShaperLSB ButtonShaperLSBClock(oneSecondClk, oneSecondClkExtended, clk);
 

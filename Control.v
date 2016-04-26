@@ -17,11 +17,11 @@ the timeDigitSetCount to 4'd0
 */
 
 
-module Control(currentBits, toggleSwitches17To14, toggleSwitches13To6, resetSetLoadStart, clk, controlledToggleSwitchBits, outputToROM, state);
+module Control(currentBits, toggleSwitches17To14, toggleSwitches13To10, resetSetLoadStart, clk, controlledToggleSwitchBits, outputToROM, state);
 input clk;
 input [3:0] resetSetLoadStart;
 input [3:0] toggleSwitches17To14;
-input [7:0] toggleSwitches13To6;
+input [3:0] toggleSwitches13To10;
 input [23:0] currentBits;
 output [23:0] controlledToggleSwitchBits;
 output reg [3:0] state;
@@ -135,7 +135,8 @@ begin
 		end
 		else if(resetSetLoadStart[1] == 1'b1)begin 
 			if(disableSetLoadStart == 0)begin
-				outputToROM <= toggleSwitches13To6;
+				outputToROM[3:0] <= toggleSwitches13To10;
+				outputToROM[7:4] <= 4'd0;
 				state <= 4'd2;												// 4'd2 stands for the state that loads the Patient address from the ROM
 			end
 		end

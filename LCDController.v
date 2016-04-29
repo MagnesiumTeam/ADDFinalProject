@@ -1,6 +1,6 @@
-module LCDController(romContent, pill12And3Duration, CLK_400Hz, resetn, LCD_ON, LCD_RS, LCD_EN, LCD_RW, LCD_DATA);
+module LCDController(monitorOrMissedScene, romContent, pill12And3Duration, CLK_400Hz, resetn, LCD_ON, LCD_RS, LCD_EN, LCD_RW, LCD_DATA);
 
-input CLK_400Hz, resetn; 
+input CLK_400Hz, resetn, monitorOrMissedScene; 
 input [27:0] romContent;
 input [11:0] pill12And3Duration;
 output LCD_ON, LCD_RS, LCD_EN, LCD_RW;
@@ -380,12 +380,14 @@ begin
 	endcase
 end
 
-always @ (posedge CLK_400Hz, negedge resetn)
+always @ (posedge CLK_400Hz)
 begin
-	if (resetn == 0) begin
-		p_state <= reset1;
+	if(monitorOrMissedScene == 0)begin 
+		if (resetn == 0) begin
+			p_state <= reset1;
+		end
+		else
+			p_state <= n_state;
 	end
-	else
-		p_state <= n_state;
 end
 endmodule

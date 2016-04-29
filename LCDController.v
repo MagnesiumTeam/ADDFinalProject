@@ -1,7 +1,7 @@
-module LCDController(patientID, pill12And3Duration, CLK_400Hz, resetn, LCD_ON, LCD_RS, LCD_EN, LCD_RW, LCD_DATA);
+module LCDController(romContent, pill12And3Duration, CLK_400Hz, resetn, LCD_ON, LCD_RS, LCD_EN, LCD_RW, LCD_DATA);
 
 input CLK_400Hz, resetn; 
-input [3:0] patientID;
+input [27:0] romContent;
 input [11:0] pill12And3Duration;
 output LCD_ON, LCD_RS, LCD_EN, LCD_RW;
 output [7:0] LCD_DATA;
@@ -38,7 +38,7 @@ assign LCD_ON=1;
 assign LCD_RW=0;
 assign LCD_DATA = LCD_DATA_VALUE;
 
-always @ (p_state, pill12And3Duration, patientID)
+always @ (p_state, pill12And3Duration, romContent)
 begin
 	case (p_state)
 		reset1: begin
@@ -204,12 +204,12 @@ begin
 		write_char9: begin
 			n_state = toggle_e17;
 			{LCD_EN, LCD_RS}=2'b11;
-			LCD_DATA_VALUE ={4'b0011, patientID}; 
+			LCD_DATA_VALUE ={4'b0011, romContent[27:24]}; 
 		end
 		toggle_e17: begin
 			n_state = w_address;
 			{LCD_EN, LCD_RS}=2'b01;
-			LCD_DATA_VALUE ={4'b0011, patientID};
+			LCD_DATA_VALUE ={4'b0011, romContent[27:24]};
 		end
 		// set DDRAM address for the second line
 		w_address: begin
@@ -235,12 +235,12 @@ begin
 		write_char12: begin
 			n_state = toggle_e21;
 			{LCD_EN, LCD_RS}=2'b11;
-			LCD_DATA_VALUE =8'h31; // 1
+			LCD_DATA_VALUE ={4'b0011, romContent[23:20]}; // #
 		end 
 		toggle_e21: begin
 			n_state = write_char13;
 			{LCD_EN, LCD_RS}=2'b01;
-			LCD_DATA_VALUE =8'h31;
+			LCD_DATA_VALUE ={4'b0011, romContent[23:20]}; // #
 		end
 		write_char13: begin
 			n_state = toggle_e22;
@@ -285,12 +285,12 @@ begin
 		write_char18: begin
 			n_state = toggle_e27;
 			{LCD_EN, LCD_RS}=2'b11;
-			LCD_DATA_VALUE =8'h32; // 2
+			LCD_DATA_VALUE ={4'b0011, romContent[15:12]}; // #
 		end 
 		toggle_e27: begin
 			n_state = write_char19;
 			{LCD_EN, LCD_RS}=2'b01;
-			LCD_DATA_VALUE =8'h32;
+			LCD_DATA_VALUE ={4'b0011, romContent[15:12]}; // #
 		end
 		write_char19: begin
 			n_state = toggle_e28;
@@ -335,12 +335,12 @@ begin
 		write_char23: begin
 			n_state = toggle_e33;
 			{LCD_EN, LCD_RS}=2'b11;
-			LCD_DATA_VALUE =8'h33; // 3
+			LCD_DATA_VALUE ={4'b0011, romContent[7:4]}; // #
 		end 
 		toggle_e33: begin
 			n_state = write_char25;
 			{LCD_EN, LCD_RS}=2'b01;
-			LCD_DATA_VALUE =8'h32;
+			LCD_DATA_VALUE ={4'b0011, romContent[7:4]}; // #
 		end
 		write_char25: begin
 			n_state = toggle_e34;

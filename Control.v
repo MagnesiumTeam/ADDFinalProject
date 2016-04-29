@@ -27,9 +27,9 @@ output [23:0] controlledToggleSwitchBits;
 output reg [3:0] state;
 output reg [7:0] outputToROM;
 
-reg [3:0] timeDigitSetCount;												// determines which bit to set in the hh mm ss bits of the clock
-reg disableSetLoadStart;
+reg [3:0] timeDigitSetCount;												// determines which bit to set in the hh mm ss bits of the clock 
 reg [23:0] rControlledToggleSwitchBits;
+reg disableSetAndLoad;
 
 always @(posedge clk)														// at the positive edge of the clock
 begin
@@ -41,12 +41,12 @@ begin
 		rControlledToggleSwitchBits[7:4] <= 4'd5;
 		rControlledToggleSwitchBits[3:0] <= 4'd9;
 		state <= 4'd0;														// 4'd0 stands for the reset state 
-		timeDigitSetCount <= 4'd0;											// indicates that the next digit to be set is LHB
-		disableSetLoadStart <= 0;											// enables the set and the load push buttons
+		timeDigitSetCount <= 4'd0;											// indicates that the next digit to be set is LHB 
+		disableSetAndLoad <= 0;
 	end
 	else begin																// if the reset push button was not depressed
-		if(resetSetLoadStart[2] == 1'b1)begin								// Check which of the set button was depressed
-			if(disableSetLoadStart == 0)begin								// if the set and load push buttons are enabled
+		if(resetSetLoadStart[2] == 1'b1)begin								// Check which of the set button was depressed 
+			if(disableSetAndLoad == 0)begin
 				if(timeDigitSetCount == 4'd0)begin							// Evaluates that the digit to work on is HHB
 
 					if(toggleSwitches17To14[3:0] > 4'd1)begin 				// If the toggle switch value is greater than 1 for HHB
@@ -130,21 +130,19 @@ begin
 					timeDigitSetCount <= 4'd0;
 				end
 
-				state <= 4'd1;												// 4'd1 stands for the state that sets the clock
+				state <= 4'd1;												// 4'd1 stands for the state that sets the clock  
 			end
 		end
 		else if(resetSetLoadStart[1] == 1'b1)begin 
-			if(disableSetLoadStart == 0)begin
+			if(disableSetAndLoad == 0)begin
 				outputToROM[3:0] <= toggleSwitches13To10;
 				outputToROM[7:4] <= 4'd0;
-				state <= 4'd2;												// 4'd2 stands for the state that loads the Patient address from the ROM
-			end
+				state <= 4'd2;													// 4'd2 stands for the state that loads the Patient address from the ROM 
+			end  
 		end
-		else if(resetSetLoadStart[0] == 1'b1)begin
-			if(disableSetLoadStart == 0)begin
-				state <= 4'd3;												// 4'd3 stands for the state that starts the clock
-				disableSetLoadStart <= 1;
-			end
+		else if(resetSetLoadStart[0] == 1'b1)begin 
+			state <= 4'd3;												// 4'd3 stands for the state that starts the clock
+			disableSetAndLoad <= 1;
 		end  
 	end
 end

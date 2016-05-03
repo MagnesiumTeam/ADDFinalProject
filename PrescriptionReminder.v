@@ -4,9 +4,10 @@ Date: April 14, 2016
 Project: Prescription Reminder
 */
 
-module PrescriptionReminder(resetSetLoadStart, toggleSwitches17To14, toggleSwitches13To10, clk, outputBits, demoOrRealMode,
+module PrescriptionReminder(resetSetLoadStart, toggleSwitches17To14, toggleSwitches13To10, toggleSwitches4To2, clk, outputBits, demoOrRealMode,
 							LCD_ON, LCD_RS, LCD_EN, LCD_RW, LCD_DATA, monitorOrMissedScene, pill12And3LEDs);
 input clk, demoOrRealMode, monitorOrMissedScene;
+input [2:0] toggleSwitches4To2;
 input [3:0] toggleSwitches17To14, resetSetLoadStart;
 input [3:0] toggleSwitches13To10;
 output [41:0] outputBits; 
@@ -19,8 +20,8 @@ wire LCD_ONToWrapper, LCD_RSToWrapper, LCD_ENToWrapper, LCD_RWToWrapper;
 wire [41:0] bitsFromSevenSegDisp; 
 wire [2:0] pill12And3LEDsToOutputWrapper;
 wire [3:0] toggleSwitches17To14FromInputWrapper, toggleSwitches13To10FromInputWrapper, resetSetLoadStartFromInputWrapper, resetSetLoadStartFromButtonShaper, state;
-wire [7:0] romAddressFromControl, LCD_DATAToWrapper;
-wire [27:0] romContent;
+wire [7:0] memoryAddressFromControl, LCD_DATAToWrapper;
+wire [27:0] romContent, dataToStoreInRAM, ramContent;
 wire [23:0] controlledToggleSwitchBits, bitsFromClock;
 wire [13:0] idAndDurationFromSevenSeg;
 wire [11:0] durationsFromNextPillMonitor;
@@ -32,13 +33,20 @@ ButtonShaper ButtonShaperSet(resetSetLoadStartFromInputWrapper[2], resetSetLoadS
 ButtonShaper ButtonShaperStart(resetSetLoadStartFromInputWrapper[1], resetSetLoadStartFromButtonShaper[1], clkFromInputWrapper);
 ButtonShaper ButtonShaperPause(resetSetLoadStartFromInputWrapper[0], resetSetLoadStartFromButtonShaper[0], clkFromInputWrapper);
 
-Control ControlPR(bitsFromClock, toggleSwitches17To14FromInputWrapper, toggleSwitches13To10FromInputWrapper, resetSetLoadStartFromButtonShaper, clkFromInputWrapper, controlledToggleSwitchBits, romAddressFromControl, state);
+Control ControlPR(bitsFromClock, toggleSwitches17To14FromInputWrapper, toggleSwitches13To10FromInputWrapper, resetSetLoadStartFromButtonShaper, clkFromInputWrapper, controlledToggleSwitchBits, memoryAddressFromControl, state);
 
-ROM ROMPR(romAddressFromControl, clkFromInputWrapper, romContent);
+ROM ROMPR(memoryAddressFromControl, clkFromInputWrapper, romContent);
 
 Clock ClockPR(demoOrRealModeFromInputWrapper, state, controlledToggleSwitchBits, clkFromInputWrapper, bitsFromClock);
 
 NextPillMonitor NextPillMonitorPR(romContent, bitsFromClock, clkFromInputWrapper, state, durationsFromNextPillMonitor);
+
+//PillTakenRecorder PillTakenRecorderPR(toggleSwitches4To2, romContent, durationsFromNextPillMonitor, clkFromInputWrapper, dataToStoreInRAM);
+
+// monitorOrMissedSceneFromInputWrapper stands in for the wren bit. When it is 1 we're writing to the RAM but when it is 0 we are reading from the RAM
+// so that when set the monitorOrMissedSceneFromInputWrapper toggle switch to 0 we should see the patient x misses on the LCD and when we set it to 1
+// we should see patient: x on the LCD
+// RAM RAMPR(memoryAddressFromControl, clkFromInputWrapper, data, monitorOrMissedSceneFromInputWrapper, q);	
 
 LCD LCDPR(monitorOrMissedSceneFromInputWrapper,romContent, durationsFromNextPillMonitor, clkFromInputWrapper, resetSetLoadStartFromInputWrapper[3], LCD_ONToWrapper, LCD_RSToWrapper, LCD_ENToWrapper, LCD_RWToWrapper, LCD_DATAToWrapper);
 

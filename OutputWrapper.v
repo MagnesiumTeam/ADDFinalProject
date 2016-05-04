@@ -3,15 +3,17 @@ Name: The Magnesium Team (Olanrewaju Ibironke, Su Hui Tan, Anitha Ramesh Puranik
 Date: April 14, 2016
 Project: Output Wrapper
 */
-module OutputWrapper(pill12And3LEDsIn, LCD_ONIn, LCD_RSIn, LCD_ENIn, LCD_RWIn, LCD_DATAIn, bitsIn, pill12And3LEDsOut, LCD_ONOut, LCD_RSOut, LCD_ENOut, LCD_RWOut, LCD_DATAOut, bitsOut); 
+module OutputWrapper(pill1DurationIn, pill12And3LEDsIn, LCD_ONIn, LCD_RSIn, LCD_ENIn, LCD_RWIn, LCD_DATAIn, bitsIn, pill12And3LEDsOut, LCD_ONOut, LCD_RSOut, LCD_ENOut, LCD_RWOut, LCD_DATAOut, bitsOut, pill1DurationOut); 
 
 input LCD_ONIn, LCD_RSIn, LCD_ENIn, LCD_RWIn;
 input [2:0] pill12And3LEDsIn;
+input [6:0] pill1DurationIn;
 input [7:0] LCD_DATAIn;
 input [41:0] bitsIn; 
 
 output LCD_ONOut, LCD_RSOut, LCD_ENOut, LCD_RWOut;
 output [2:0] pill12And3LEDsOut;
+output [6:0] pill1DurationOut;
 output [7:0] LCD_DATAOut;
 output [41:0] bitsOut; 
 
@@ -22,4 +24,6 @@ assign LCD_ENOut = LCD_ENIn;
 assign LCD_RWOut = LCD_RWIn;
 assign LCD_DATAOut = LCD_DATAIn;
 assign pill12And3LEDsOut = pill12And3LEDsIn;
+
+assign pill1DurationOut = pill1DurationIn;
 endmodule 

@@ -3,8 +3,9 @@ Name: The Magnesium Team (Olanrewaju Ibironke, Su Hui Tan, Anitha Ramesh Puranik
 Date: April 14, 2016
 Project: Control Module
 */
-module NextPillMonitor(romContent, bitsFromClock, clk, state, pill12And3Duration);
+module NextPillMonitor(signalFromPillTakenRecorder, romContent, bitsFromClock, clk, state, pill12And3Duration);
 input clk;
+input [2:0] signalFromPillTakenRecorder;
 input [3:0] state;
 input [27:0] romContent;
 input [23:0] bitsFromClock; 
@@ -69,6 +70,18 @@ begin
 			end
 			
 		end  
+
+		if(signalFromPillTakenRecorder[0] == 1)begin										// index 0 = pill1, index 1 = pill2, index 2 = pill3
+			pill1Duration <= romContent[19:16];
+		end
+
+		if(signalFromPillTakenRecorder[1] == 1)begin
+			pill2Duration <= romContent[11:8];
+		end
+
+		if(signalFromPillTakenRecorder[2] == 1)begin
+			pill3Duration <= romContent[3:0];
+		end
 	end
 end
 assign pill12And3Duration[11:8] = pill1Duration;

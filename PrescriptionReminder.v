@@ -4,27 +4,28 @@ Date: April 14, 2016
 Project: Prescription Reminder
 */
 
-module PrescriptionReminder(resetSetLoadStart, toggleSwitches17To14, toggleSwitches13To10, toggleSwitches4To2, clk, outputBits, demoOrRealMode,
-							LCD_ON, LCD_RS, LCD_EN, LCD_RW, LCD_DATA, monitorOrMissedScene, pill12And3LEDs);
-input clk, demoOrRealMode, monitorOrMissedScene;
-input [2:0] toggleSwitches4To2;
+module PrescriptionReminder(resetSetLoadStart, toggleSwitches17To14, toggleSwitches13To10, clk, outputBits, demoOrRealMode,
+							LCD_ON, LCD_RS, LCD_EN, LCD_RW, LCD_DATA, monitorOrMissedScene, pill12And3LEDs, pill1Duration);
+input clk, demoOrRealMode, monitorOrMissedScene; 
 input [3:0] toggleSwitches17To14, resetSetLoadStart;
 input [3:0] toggleSwitches13To10;
 output [41:0] outputBits; 
 output [7:0] LCD_DATA;
 output [2:0] pill12And3LEDs;
 output LCD_ON, LCD_RS, LCD_EN, LCD_RW;
+output [6:0] pill1Duration;
 
 wire bitFromOneSecondClock, clkFromInputWrapper, enableTimerFromInputWrapper, demoOrRealModeFromInputWrapper, monitorOrMissedSceneFromInputWrapper;
 wire LCD_ONToWrapper, LCD_RSToWrapper, LCD_ENToWrapper, LCD_RWToWrapper; 
 wire [41:0] bitsFromSevenSegDisp; 
-wire [2:0] pill12And3LEDsToOutputWrapper;
+wire [2:0] pill12And3LEDsToOutputWrapper, signalFromPillTakenRecorder;
 wire [3:0] toggleSwitches17To14FromInputWrapper, toggleSwitches13To10FromInputWrapper, resetSetLoadStartFromInputWrapper, resetSetLoadStartFromButtonShaper, state;
 wire [7:0] memoryAddressFromControl, LCD_DATAToWrapper;
-wire [27:0] romContent, dataToStoreInRAM, ramContent;
+wire [27:0] romContent, dataToStoreInRAM, ramContent, dataFromRAM;
 wire [23:0] controlledToggleSwitchBits, bitsFromClock;
 wire [13:0] idAndDurationFromSevenSeg;
 wire [11:0] durationsFromNextPillMonitor;
+wire [6:0] pill1DurationFromSevenSegment;
 
 InputWrapper InputWrapperPR(monitorOrMissedScene, demoOrRealMode, resetSetLoadStart, toggleSwitches17To14, toggleSwitches13To10, clk, monitorOrMissedSceneFromInputWrapper, demoOrRealModeFromInputWrapper, resetSetLoadStartFromInputWrapper, toggleSwitches17To14FromInputWrapper, toggleSwitches13To10FromInputWrapper,  clkFromInputWrapper);
 
@@ -39,16 +40,17 @@ ROM ROMPR(memoryAddressFromControl, clkFromInputWrapper, romContent);
 
 Clock ClockPR(demoOrRealModeFromInputWrapper, state, controlledToggleSwitchBits, clkFromInputWrapper, bitsFromClock);
 
-NextPillMonitor NextPillMonitorPR(romContent, bitsFromClock, clkFromInputWrapper, state, durationsFromNextPillMonitor);
+NextPillMonitor NextPillMonitorPR(signalFromPillTakenRecorder, romContent, bitsFromClock, clkFromInputWrapper, state, durationsFromNextPillMonitor);
 
-//PillTakenRecorder PillTakenRecorderPR(toggleSwitches4To2, romContent, durationsFromNextPillMonitor, clkFromInputWrapper, dataToStoreInRAM);
+PillTakenRecorder PillTakenRecorderPR(state, resetSetLoadStartFromButtonShaper, romContent, durationsFromNextPillMonitor, clkFromInputWrapper, dataToStoreInRAM, signalFromPillTakenRecorder);
 
 // monitorOrMissedSceneFromInputWrapper stands in for the wren bit. When it is 1 we're writing to the RAM but when it is 0 we are reading from the RAM
 // so that when set the monitorOrMissedSceneFromInputWrapper toggle switch to 0 we should see the patient x misses on the LCD and when we set it to 1
-// we should see patient: x on the LCD
-// RAM RAMPR(memoryAddressFromControl, clkFromInputWrapper, data, monitorOrMissedSceneFromInputWrapper, q);	
+// we should see patient: x on the LCD 28'd4567
+ 
+RAM RAMPR(memoryAddressFromControl, clkFromInputWrapper, dataToStoreInRAM, 1, dataFromRAM);	
 
-LCD LCDPR(monitorOrMissedSceneFromInputWrapper,romContent, durationsFromNextPillMonitor, clkFromInputWrapper, resetSetLoadStartFromInputWrapper[3], LCD_ONToWrapper, LCD_RSToWrapper, LCD_ENToWrapper, LCD_RWToWrapper, LCD_DATAToWrapper);
+LCD LCDPR(dataFromRAM, monitorOrMissedSceneFromInputWrapper,romContent, durationsFromNextPillMonitor, clkFromInputWrapper, resetSetLoadStartFromInputWrapper[3], LCD_ONToWrapper, LCD_RSToWrapper, LCD_ENToWrapper, LCD_RWToWrapper, LCD_DATAToWrapper);
 
 LEDControl LEDControlPR(clkFromInputWrapper, durationsFromNextPillMonitor, pill12And3LEDsToOutputWrapper);
 
@@ -59,6 +61,8 @@ SevenSegDisp SevenSegDispLMB(bitsFromClock[11:8], bitsFromSevenSegDisp[20:14]);
 SevenSegDisp SevenSegDispHSB(bitsFromClock[7:4], bitsFromSevenSegDisp[13:7]);
 SevenSegDisp SevenSegDispLSB(bitsFromClock[3:0], bitsFromSevenSegDisp[6:0]);
 
-OutputWrapper OutputWrapperPR(pill12And3LEDsToOutputWrapper, LCD_ONToWrapper, LCD_RSToWrapper, LCD_ENToWrapper, LCD_RWToWrapper, LCD_DATAToWrapper, bitsFromSevenSegDisp, pill12And3LEDs, LCD_ON, LCD_RS, LCD_EN, LCD_RW, LCD_DATA, outputBits);
+SevenSegDisp SevenSegDispPill1Duration(durationsFromNextPillMonitor[11:8], pill1DurationFromSevenSegment);
+
+OutputWrapper OutputWrapperPR(pill1DurationFromSevenSegment, pill12And3LEDsToOutputWrapper, LCD_ONToWrapper, LCD_RSToWrapper, LCD_ENToWrapper, LCD_RWToWrapper, LCD_DATAToWrapper, bitsFromSevenSegDisp, pill12And3LEDs, LCD_ON, LCD_RS, LCD_EN, LCD_RW, LCD_DATA, outputBits, pill1Duration);
 
 endmodule

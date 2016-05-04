@@ -1,7 +1,7 @@
-module LCDController(monitorOrMissedScene, romContent, pill12And3Duration, CLK_400Hz, resetn, LCD_ON, LCD_RS, LCD_EN, LCD_RW, LCD_DATA);
+module LCDController(dataFromRAM, monitorOrMissedScene, romContent, pill12And3Duration, CLK_400Hz, resetn, LCD_ON, LCD_RS, LCD_EN, LCD_RW, LCD_DATA);
 
 input CLK_400Hz, resetn, monitorOrMissedScene; 
-input [27:0] romContent;
+input [27:0] romContent, dataFromRAM;
 input [11:0] pill12And3Duration;
 output LCD_ON, LCD_RS, LCD_EN, LCD_RW;
 output [7:0] LCD_DATA;
@@ -393,12 +393,22 @@ begin
 			writeChar20: begin
 				p_state <= toggle_e29;
 				{LCD_EN, LCD_RS}=2'b11;
-				LCD_DATA_VALUE = {4'b0011, pill12And3Duration[11:8]}; 
+				if(monitorOrMissedScene == 1)begin								// 1 represents monitor or remaining time
+					LCD_DATA_VALUE = {4'b0011, pill12And3Duration[11:8]}; 
+				end
+				else begin														// 0 represents misses 
+					LCD_DATA_VALUE = {4'b0011, dataFromRAM[19:16]}; 
+				end
 			end
 			toggle_e29: begin
 				p_state <= writeChar21;
 				{LCD_EN, LCD_RS}=2'b01;
-				LCD_DATA_VALUE = {4'b0011, pill12And3Duration[11:8]}; 
+				if(monitorOrMissedScene == 1)begin								// 1 represents monitor or remaining time
+					LCD_DATA_VALUE = {4'b0011, pill12And3Duration[11:8]}; 
+				end
+				else begin														// 0 represents misses 
+					LCD_DATA_VALUE = {4'b0011, dataFromRAM[19:16]}; 
+				end
 			end
 			writeChar21: begin
 				p_state <= toggle_e30;
@@ -442,13 +452,23 @@ begin
 			end
 			writeChar25: begin
 				p_state <= toggle_e34;
-				{LCD_EN, LCD_RS}=2'b11;
-				LCD_DATA_VALUE = {4'b0011, pill12And3Duration[7:4]}; 
+				{LCD_EN, LCD_RS}=2'b11; 
+				if(monitorOrMissedScene == 1)begin								// 1 represents monitor or remaining time
+					LCD_DATA_VALUE = {4'b0011, pill12And3Duration[7:4]}; 
+				end
+				else begin														// 0 represents misses 
+					LCD_DATA_VALUE = {4'b0011, dataFromRAM[11:8]}; 
+				end
 			end
 			toggle_e34: begin
 				p_state <= writeChar26;
 				{LCD_EN, LCD_RS}=2'b01;
-				LCD_DATA_VALUE = {4'b0011, pill12And3Duration[7:4]}; 
+				if(monitorOrMissedScene == 1)begin								// 1 represents monitor or remaining time
+					LCD_DATA_VALUE = {4'b0011, pill12And3Duration[7:4]}; 
+				end
+				else begin														// 0 represents misses 
+					LCD_DATA_VALUE = {4'b0011, dataFromRAM[11:8]}; 
+				end
 			end
 			writeChar26: begin
 				p_state <= toggle_e35;
@@ -492,13 +512,23 @@ begin
 			end
 			writeChar30: begin
 				p_state <= toggle_e39;
-				{LCD_EN, LCD_RS}=2'b11;
-				LCD_DATA_VALUE = {4'b0011, pill12And3Duration[3:0]}; 
+				{LCD_EN, LCD_RS}=2'b11; 
+				if(monitorOrMissedScene == 1)begin								// 1 represents monitor or remaining time
+					LCD_DATA_VALUE = {4'b0011, pill12And3Duration[3:0]}; 
+				end
+				else begin														// 0 represents misses 
+					LCD_DATA_VALUE = {4'b0011, dataFromRAM[3:0]}; 
+				end
 			end
 			toggle_e39: begin
 				p_state <= toggle_e40;
 				{LCD_EN, LCD_RS}=2'b01;
-				LCD_DATA_VALUE = {4'b0011, pill12And3Duration[3:0]};
+				if(monitorOrMissedScene == 1)begin								// 1 represents monitor or remaining time
+					LCD_DATA_VALUE = {4'b0011, pill12And3Duration[3:0]}; 
+				end
+				else begin														// 0 represents misses 
+					LCD_DATA_VALUE = {4'b0011, dataFromRAM[3:0]}; 
+				end
 			end
 			toggle_e40: begin
 				p_state <= return_home;

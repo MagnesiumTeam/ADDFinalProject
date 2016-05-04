@@ -137,11 +137,11 @@ begin
 			if(disableSetAndLoad == 0)begin
 				outputToROM[3:0] <= toggleSwitches13To10;
 				outputToROM[7:4] <= 4'd0;
-				state <= 4'd2;													// 4'd2 stands for the state that loads the Patient address from the ROM 
+				state <= 4'd2;												// 4'd2 stands for the state that loads the Patient address from the ROM 
 			end  
 		end
 		else if(resetSetLoadStart[0] == 1'b1)begin 
-			state <= 4'd3;												// 4'd3 stands for the state that starts the clock
+			state <= 4'd3;													// 4'd3 stands for the state that starts the clock
 			disableSetAndLoad <= 1;
 		end  
 	end

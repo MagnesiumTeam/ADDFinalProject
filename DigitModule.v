@@ -1,7 +1,7 @@
 /*
-Name: Olanrewaju Gabriel Ibironke
-Date: March 21, 2016
-Project: Digit Module
+Name: The Magnesium Team (Olanrewaju Ibironke, Su Hui Tan, Anitha Ramesh Puranik, Meghna Chittajallu)
+Date: May 4, 2016
+Project: Time Digit Module
 */
 
 module DigitModule(currentBits, rCount, identity, setBits, maximumBits, clk, state, outputBits);

@@ -1,6 +1,12 @@
-module LCDController(dataFromRAM, monitorOrMissedScene, romContent, pill12And3Duration, CLK_400Hz, resetn, LCD_ON, LCD_RS, LCD_EN, LCD_RW, LCD_DATA);
+/*
+Name: The Magnesium Team (Olanrewaju Ibironke, Su Hui Tan, Anitha Ramesh Puranik, Meghna Chittajallu)
+Date: May 4, 2016
+Project: LCD Controller Module
+*/
 
-input CLK_400Hz, resetn, monitorOrMissedScene; 
+module LCDController(dataFromRAM, monitorOrMissedScene, romContent, pill12And3Duration, clkOneMilliSecond, resetn, LCD_ON, LCD_RS, LCD_EN, LCD_RW, LCD_DATA);
+
+input clkOneMilliSecond, resetn, monitorOrMissedScene; 
 input [27:0] romContent, dataFromRAM;
 input [11:0] pill12And3Duration;
 output LCD_ON, LCD_RS, LCD_EN, LCD_RW;
@@ -42,7 +48,7 @@ assign LCD_ON=1;
 assign LCD_RW=0;
 assign LCD_DATA = LCD_DATA_VALUE; 
 
-always @ (posedge CLK_400Hz)
+always @ (posedge clkOneMilliSecond)
 begin
 	if(resetn == 0)begin
 		p_state <= reset1;

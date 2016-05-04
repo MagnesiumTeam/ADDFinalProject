@@ -1,4 +1,8 @@
-
+/*
+Name: The Magnesium Team (Olanrewaju Ibironke, Su Hui Tan, Anitha Ramesh Puranik, Meghna Chittajallu)
+Date: May 4, 2016
+Project: One Millisecond Timer
+*/
 module OneMilliSecondTimer(demoOrRealMode, clk, oneMilliSecond);
 input clk, demoOrRealMode;
 output oneMilliSecond;

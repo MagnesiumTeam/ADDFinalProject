@@ -1,8 +1,9 @@
 /*
-Name: Olanrewaju Gabriel Ibironke
-Date: February 20, 2016
-Project: Button Shaper
+Name: The Magnesium Team (Olanrewaju Ibironke, Su Hui Tan, Anitha Ramesh Puranik, Meghna Chittajallu)
+Date: May 4, 2016
+Project: ButtonShaper
 */
+
 module ButtonShaper(buttonInput, buttonOutput, Clk);
 input buttonInput, Clk;
 output buttonOutput;

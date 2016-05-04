@@ -1,8 +1,7 @@
-
 /*
-Name: Olanrewaju Gabriel Ibironke
-Date: March 22, 2016
-Project: CustomTimer
+Name: The Magnesium Team (Olanrewaju Ibironke, Su Hui Tan, Anitha Ramesh Puranik, Meghna Chittajallu)
+Date: May 4, 2016
+Project: One Second Timer
 */
 
 module OneSecondTimer(demoOrRealMode, clk, oneSecondClk);

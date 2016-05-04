@@ -1,3 +1,9 @@
+/*
+Name: The Magnesium Team (Olanrewaju Ibironke, Su Hui Tan, Anitha Ramesh Puranik, Meghna Chittajallu)
+Date: May 4, 2016
+Project: LED Control Module
+*/
+
 module LEDControl(clk, pill12And3Durations, pill12And3LEDs);
 
 input clk;

@@ -16,7 +16,7 @@ output reg [2:0] signalFromPTRToNextPillMonitor;
 output [27:0] dataToStoreInRAM;
 
 reg [11:0] pill12And3Misses; 
-reg [2:0] ignoreTheStartState, incrementOnce, tookPill;  
+reg [2:0] ignoreTheStartState, incrementOnce, tookPill, preventTPAndIOFromChangingTwiceInOneSecond;  
 
 always @(posedge clk)
 begin 
@@ -33,22 +33,21 @@ begin
 	else begin																// if the reset or load from rom buttons were not pushed
 
 		if(pill12And3Duration[11:8] == 4'd0)begin							// and the pill 1 duration is 0
-			
+			if(preventTPAndIOFromChangingTwiceInOneSecond[0] == 0)begin		// addresses cases where the interval stored in rom is 1 second
+				tookPill[0] <= 0;																		 
+				incrementOnce[0] <= 0;
+			end  
 			if(resetSetLoadStart[0] == 1)begin								// if the start button is pushed
 				signalFromPTRToNextPillMonitor[0] <= 1;						// patient took pill 1 so switch off the LED and reset the pill duration to max  
 				tookPill[0] <= 1;											// patient took pill 1 so don't increment miss for pill 1
-			end 
-			
+				preventTPAndIOFromChangingTwiceInOneSecond[0] <= 1;			// keep tookPill[1] as 1 and not flipped to zero from above after being asserted
+			end  
 			if(state == 4'd3)begin											// permit the system to increment only when we have started the time
 				ignoreTheStartState[0] <= 1;								
-			end
-
+			end 
 		end 
-		else if(pill12And3Duration[11:8] == 4'd1)begin						// if pill 1 duration is 1
-			tookPill[0] <= 0;												// reset the tookPill for pill 1
-			incrementOnce[0] <= 0; 											// reset the incrementOnce variable
-		end 																 
 		else begin 															// if pill 1 duration is not 0 or 1
+			preventTPAndIOFromChangingTwiceInOneSecond[0] <= 0;
 			if(signalFromPTRToNextPillMonitor[0] == 1)begin					// and if the LED was switched off
 				signalFromPTRToNextPillMonitor[0] <= 0; 					// reset the signal to NextPillMonitor so it can be used again
 			end
@@ -62,25 +61,24 @@ begin
 			 		end  
 			 	end  														
 			 end
-		end
+		end 
 
 		if(pill12And3Duration[7:4] == 4'd0)begin							// and the pill 2 duration is 0
-			
+			if(preventTPAndIOFromChangingTwiceInOneSecond[1] == 0)begin		// addresses cases where the interval stored in rom is 1 second
+				tookPill[1] <= 0;																		 
+				incrementOnce[1] <= 0;
+			end  
 			if(resetSetLoadStart[0] == 1)begin								// if the start button is pushed
 				signalFromPTRToNextPillMonitor[1] <= 1;  					// patient took pill 2 so switch off the LED and reset the pill duration to max 
 				tookPill[1] <= 1;											// patient took pill 2 so don't increment miss for pill 2
+				preventTPAndIOFromChangingTwiceInOneSecond[1] <= 1;			// keep tookPill[1] as 1 and not flipped to zero from above after being asserted
 			end 
-			
 			if(state == 4'd3)begin											// permit the system to increment only when we have started the time
 				ignoreTheStartState[1] <= 1;
-			end
-
+			end 
 		end
-		else if(pill12And3Duration[7:4] == 4'd1)begin						// if pill 2 duration is 1
-			tookPill[1] <= 0;												// reset the tookPill for pill 2
-			incrementOnce[1] <= 0; 											// reset the incrementOnce variable
-		end 																 
 		else begin 															// if pill 2 duration is not 0 or 1
+			preventTPAndIOFromChangingTwiceInOneSecond[1] <= 0;
 			if(signalFromPTRToNextPillMonitor[1] == 1)begin					// and if the LED was switched off
 				signalFromPTRToNextPillMonitor[1] <= 0; 					// reset the signal to NextPillMonitor so it can be used again
 			end
@@ -94,25 +92,24 @@ begin
 			 		end  
 			 	end  														
 			 end
-		end
+		end 	 
 
 		if(pill12And3Duration[3:0] == 4'd0)begin							// and the pill 3 duration is 0
-			
+			if(preventTPAndIOFromChangingTwiceInOneSecond[2] == 0)begin		// addresses cases where the interval stored in rom is 1 second
+				tookPill[2] <= 0;																		 
+				incrementOnce[2] <= 0;
+			end 
 			if(resetSetLoadStart[0] == 1)begin								// if the start button is pushed
 				signalFromPTRToNextPillMonitor[2] <= 1;  					// patient took pill 3 so switch off the LED and reset the pill duration to max
 				tookPill[2] <= 1;											// patient took pill 3 so don't increment miss for pill 3
-			end 
-			
+				preventTPAndIOFromChangingTwiceInOneSecond[2] <= 1;			// keep tookPill[2] as 1 and not flipped to zero from above after being asserted
+			end  
 			if(state == 4'd3)begin											// permit the system to increment only when we have started the time
 				ignoreTheStartState[2] <= 1;
-			end
-
+			end 
 		end
-		else if(pill12And3Duration[3:0] == 4'd1)begin						// if pill 3 duration is 1
-			tookPill[2] <= 0;												// reset the tookPill for pill 3
-			incrementOnce[2] <= 0; 											// reset the incrementOnce variable
-		end 																
 		else begin
+			preventTPAndIOFromChangingTwiceInOneSecond[2] <= 0;
 			if(signalFromPTRToNextPillMonitor[2] == 1)begin
 				signalFromPTRToNextPillMonitor[2] <= 0; 
 			end
@@ -126,7 +123,7 @@ begin
 			 		end  
 			 	end  														
 			 end
-		end
+		end  
 	end
 end
 

@@ -11,7 +11,7 @@ input [3:0] toggleSwitches17To14, resetSetLoadStart;
 input [3:0] toggleSwitches13To10;
 output [41:0] outputBits; 
 output [7:0] LCD_DATA;
-output [2:0] pill12And3LEDs;
+output [2:0] pill12And3LEDs; 
 output LCD_ON, LCD_RS, LCD_EN, LCD_RW; 
 
 wire bitFromOneSecondClock, clkFromInputWrapper, enableTimerFromInputWrapper, demoOrRealModeFromInputWrapper, monitorOrMissedSceneFromInputWrapper;
@@ -23,7 +23,7 @@ wire [7:0] memoryAddressFromControl, LCD_DATAToWrapper;
 wire [27:0] romContent, dataToStoreInRAM, ramContent, dataFromRAM;
 wire [23:0] controlledToggleSwitchBits, bitsFromClock;
 wire [13:0] idAndDurationFromSevenSeg;
-wire [11:0] durationsFromNextPillMonitor; 
+wire [11:0] durationsFromNextPillMonitor;  
 
 InputWrapper InputWrapperPR(monitorOrMissedScene, demoOrRealMode, resetSetLoadStart, toggleSwitches17To14, toggleSwitches13To10, clk, monitorOrMissedSceneFromInputWrapper, demoOrRealModeFromInputWrapper, resetSetLoadStartFromInputWrapper, toggleSwitches17To14FromInputWrapper, toggleSwitches13To10FromInputWrapper,  clkFromInputWrapper);
 
@@ -58,7 +58,7 @@ SevenSegDisp SevenSegDispHMB(bitsFromClock[15:12], bitsFromSevenSegDisp[27:21]);
 SevenSegDisp SevenSegDispLMB(bitsFromClock[11:8], bitsFromSevenSegDisp[20:14]);
 SevenSegDisp SevenSegDispHSB(bitsFromClock[7:4], bitsFromSevenSegDisp[13:7]);
 SevenSegDisp SevenSegDispLSB(bitsFromClock[3:0], bitsFromSevenSegDisp[6:0]);
-
+ 
 OutputWrapper OutputWrapperPR(pill12And3LEDsToOutputWrapper, LCD_ONToWrapper, LCD_RSToWrapper, LCD_ENToWrapper, LCD_RWToWrapper, LCD_DATAToWrapper, bitsFromSevenSegDisp, pill12And3LEDs, LCD_ON, LCD_RS, LCD_EN, LCD_RW, LCD_DATA, outputBits);
 
 endmodule
